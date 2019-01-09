@@ -93,7 +93,7 @@ class Quotes {
 
   Quotes.fromJson(Map<String, dynamic> json) {
     quote = json['quote'];
-    length = json['length'];
+    length = json['length'].toString();
     author = json['author'];
     tags = json['tags'].cast<String>();
     category = json['category'];

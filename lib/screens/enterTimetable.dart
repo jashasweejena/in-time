@@ -3,6 +3,7 @@ import 'package:in_time/model/activity_model.dart';
 import 'package:in_time/screens/homePage.dart';
 import 'package:datetime_picker_formfield/time_picker_formfield.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TimeTableMenu extends StatefulWidget {
   @override
@@ -21,6 +22,9 @@ class TimeTableMenuState extends State<TimeTableMenu> {
   TextEditingController activityController =
       new TextEditingController(text: "");
   TextEditingController subjectController = new TextEditingController(text: "");
+
+  final CollectionReference todoCollection =
+      Firestore.instance.collection('timetable');
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -118,6 +122,7 @@ class TimeTableMenuState extends State<TimeTableMenu> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           this.widget.callback(activityList);
+          update(activityList);
           Navigator.pop(
               context, MaterialPageRoute(builder: (context) => HomePage()));
         },
@@ -159,4 +164,24 @@ class TimeTableMenuState extends State<TimeTableMenu> {
     activityList.add(activity);
     print("addToActivityList : ${activityList.length}");
   }
-}
+
+  void buildJson(){
+    Activites
+  }
+
+    Future<bool> update(List<Activities> item) async {
+    final TransactionHandler updateTransaction = (Transaction tx) async {
+      final DocumentSnapshot doc = await tx.get(todoCollection.document('activities'));
+
+      await tx.update(doc.reference, {});
+      return {'result': true};
+    };
+
+    return Firestore.instance.runTransaction(updateTransaction).then((r) => r['result']).catchError((e) {
+      print('dart error: $e');
+      return false;
+    });
+  }
+    }
+
+
